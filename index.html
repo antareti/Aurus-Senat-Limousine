@@ -8,26 +8,23 @@
   <meta property="og:title" content="Aurus Senat Limousine — игра на Pygame" />
   <meta property="og:description" content="Скачай Windows-версию, смотри исходники и инструкции по запуску." />
   <meta property="og:type" content="website" />
-  <!-- Замените ссылку ниже на свой фавикон, если хотите -->
   <link rel="icon" href="favicon.ico" />
   <style>
     :root {
       --bg: #0b0c10;
       --card: #111217;
       --muted: #98a2b3;
-      --brand: #ffd166; /* тёплый жёлтый под цвет дорожной разметки */
+      --brand: #ffd166;
       --brand-2: #00bcd4;
       --text: #e6e7eb;
       --border: #24262f;
       --accent: #20222b;
     }
     * { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji"; }
+    html, body { margin:0; padding:0; background:var(--bg); color:var(--text); font-family:system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji"; }
     a { color: inherit; text-decoration: none; }
-
     .container { max-width: 1100px; margin: 0 auto; padding: 24px; }
 
-    /* ----- NAV ----- */
     nav { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(8px); background: linear-gradient(180deg, rgba(11,12,16,0.9), rgba(11,12,16,0.6) 70%, rgba(11,12,16,0)); border-bottom: 1px solid var(--border); }
     .nav-wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
     .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: .2px; }
@@ -36,42 +33,35 @@
     .nav-links a { color: var(--muted); }
     .nav-links a:hover { color: var(--text); }
 
-    /* ----- HERO ----- */
     .hero { padding: 72px 0 48px; position: relative; overflow: hidden; }
-    .hero-bg { position: absolute; inset: 0; background:
-      radial-gradient(80% 60% at 70% 10%, rgba(0,188,212,.25), transparent 60%),
-      radial-gradient(60% 40% at 20% 0%, rgba(255,209,102,.2), transparent 50%); pointer-events: none; }
+    .hero-bg { position: absolute; inset: 0; background: radial-gradient(80% 60% at 70% 10%, rgba(0,188,212,.25), transparent 60%), radial-gradient(60% 40% at 20% 0%, rgba(255,209,102,.2), transparent 50%); pointer-events: none; }
     .hero .content { display: grid; grid-template-columns: 1.1fr .9fr; gap: 28px; align-items: center; }
     @media (max-width: 900px) { .hero .content { grid-template-columns: 1fr; } }
     .title { font-size: clamp(28px, 4vw, 48px); line-height: 1.05; margin: 6px 0 12px; }
     .subtitle { color: var(--muted); font-size: clamp(15px, 2.2vw, 18px); }
-
     .btns { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
     .btn { padding: 12px 16px; border: 1px solid var(--border); background: var(--accent); border-radius: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 10px; transition: transform .06s ease, box-shadow .2s ease; }
     .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,0,0,.3); }
-    .btn.primary { background: linear-gradient(180deg, #ffd166, #e5a100); color: #171717; border: 0; }
+    .btn.primary { background: linear-gradient(180deg, #ffd166, #e5a100); color: #171717; border:0; }
+    .btn.primary::before { content: "⬇"; margin-right: 8px; }
     .btn.ghost { background: transparent; }
     .btn.small { padding: 8px 12px; border-radius: 10px; font-weight: 600; }
 
-    /* ----- CARDS / SECTIONS ----- */
     section { padding: 36px 0 10px; }
-    .card { background: linear-gradient(180deg, var(--card), #0e0f14 120%); border: 1px solid var(--border); border-radius: 18px; padding: 18px; }
-    .grid { display: grid; gap: 18px; }
-    .grid.two { grid-template-columns: repeat(2, 1fr); }
-    .grid.three { grid-template-columns: repeat(3, 1fr); }
-    @media (max-width: 900px) { .grid.two, .grid.three { grid-template-columns: 1fr; } }
-
-    h2 { font-size: 22px; margin: 8px 0 14px; }
-    p { color: #cfd3da; line-height: 1.6; margin: 8px 0; }
-    ul { margin: 8px 0 0 18px; color: #cfd3da; }
-    li { margin: 6px 0; }
-
-    .shot { aspect-ratio: 16 / 9; border-radius: 14px; background: #0a0b0f; border: 1px dashed #303240; display: grid; place-items: center; color: var(--muted); font-size: 14px; }
-    .muted { color: var(--muted); font-size: 14px; }
-
-    footer { padding: 28px 0 60px; color: var(--muted); border-top: 1px solid var(--border); margin-top: 28px; }
-    .kbd { background: #1d2029; border: 1px solid #2a2d38; border-bottom-width: 3px; border-radius: 7px; padding: 2px 6px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 13px; }
-    code { background: #12141a; padding: 2px 6px; border-radius: 6px; border: 1px solid #242734; }
+    .card { background: linear-gradient(180deg, var(--card), #0e0f14 120%); border:1px solid var(--border); border-radius:18px; padding:18px; }
+    .grid { display:grid; gap:18px; }
+    .grid.two { grid-template-columns: repeat(2,1fr); }
+    .grid.three { grid-template-columns: repeat(3,1fr); }
+    @media (max-width:900px) { .grid.two,.grid.three{grid-template-columns:1fr;} }
+    h2 { font-size:22px; margin:8px 0 14px; }
+    p { color:#cfd3da; line-height:1.6; margin:8px 0; }
+    ul { margin:8px 0 0 18px; color:#cfd3da; }
+    li { margin:6px 0; }
+    .shot { aspect-ratio:16/9; border-radius:14px; background:#0a0b0f; border:1px dashed #303240; display:grid; place-items:center; color:var(--muted); font-size:14px; }
+    .muted { color:var(--muted); font-size:14px; }
+    footer { padding:28px 0 60px; color:var(--muted); border-top:1px solid var(--border); margin-top:28px; }
+    .kbd { background:#1d2029; border:1px solid #2a2d38; border-bottom-width:3px; border-radius:7px; padding:2px 6px; font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:13px; }
+    code { background:#12141a; padding:2px 6px; border-radius:6px; border:1px solid #242734; }
   </style>
 </head>
 <body>
@@ -94,8 +84,7 @@
         <h1 class="title">Аркадная гонка на Pygame — <br/>Aurus Senat Limousine</h1>
         <p class="subtitle">Уворачивайся от потока, обгоняй и набирай очки. Минималистичный "псевдо‑3D" вид сверху, аккуратный HUD и бодрый саундтрек.</p>
         <div class="btns">
-          <!-- ВНИМАНИЕ: замените REPO_OWNER и REPO_NAME на ваши -->
-          <a class="btn primary" id="btn-win" href="https://github.com/REPO_OWNER/REPO_NAME/releases/latest/download/AurusSenat.exe">⬇ Скачать для Windows</a>
+          <a class="btn primary" id="btn-win" href="https://drive.google.com/file/d/17alWhL7QOuDWWgkUpluAGxBfr1KEEhRs/view?usp=sharing" target="_blank">Скачать для Windows</a>
           <a class="btn" href="#download">Другие способы</a>
           <a class="btn ghost" id="btn-repo" href="https://github.com/REPO_OWNER/REPO_NAME" target="_blank" rel="noopener">★ Репозиторий</a>
         </div>
@@ -165,14 +154,14 @@ python main.py
       <div class="card">
         <h2>Структура проекта</h2>
 <pre><code>📁 aurus-senat-limousine/
- ├─ index.html               ← этот сайт (GitHub Pages)
- ├─ main.py                  ← ваш игровой скрипт
+ ├─ index.html
+ ├─ main.py
  ├─ car.png
  ├─ 2.png
  ├─ collision.wav
  ├─ bg_music.wav
  └─ assets/
-     └─ screenshot.jpg       ← скриншоты для страницы
+     └─ screenshot.jpg
 </code></pre>
         <p class="muted">Имена ассетов в игре уже зашиты. Переименовывать не нужно.</p>
       </div>
@@ -186,7 +175,7 @@ python main.py
       </div>
       <div class="card">
         <h2>Лицензия и авторство</h2>
-        <p>© <span id="year"></span> Автор игры. Код Pygame — лицензия LGPL. Сторонние звуки/изображения — проверьте их лицензионные условия.</p>
+        <p>© <span id="year"></span> HACKPACK_games. Код Pygame — лицензия LGPL. Сторонние звуки/изображения — проверьте их лицензионные условия.</p>
       </div>
     </section>
   </main>
@@ -198,10 +187,7 @@ python main.py
   </footer>
 
   <script>
-    // Авто‑подстановка текущего года
     document.getElementById('year').textContent = new Date().getFullYear();
-
-    // Маленькая помощь: если сайт размещён внутри репозитория, пытаемся угадать OWNER/REPO
     try {
       const m = location.hostname.endsWith('github.io') ? location.pathname.split('/').filter(Boolean) : null;
       if (m && m.length) {
@@ -211,7 +197,6 @@ python main.py
         document.getElementById('repo-link').href = repoUrl;
         document.getElementById('repo-link').textContent = `${owner}/${repo}`;
         document.getElementById('btn-repo').href = repoUrl;
-        document.getElementById('btn-win').href = `${repoUrl}/releases/latest/download/AurusSenat.exe`;
       }
     } catch(_){}
   </script>
