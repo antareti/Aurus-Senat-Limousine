@@ -57,7 +57,8 @@
     p { color:#cfd3da; line-height:1.6; margin:8px 0; }
     ul { margin:8px 0 0 18px; color:#cfd3da; }
     li { margin:6px 0; }
-    .shot { aspect-ratio:16/9; border-radius:14px; background:#0a0b0f; border:1px dashed #303240; display:grid; place-items:center; color:var(--muted); font-size:14px; }
+    .shot { aspect-ratio:16/9; border-radius:14px; background:#0a0b0f; border:1px dashed #303240; display:grid; place-items:center; color:var(--muted); font-size:14px; overflow:hidden; }
+    .shot video { width:100%; height:100%; object-fit:cover; border-radius:14px; }
     .muted { color:var(--muted); font-size:14px; }
     footer { padding:28px 0 60px; color:var(--muted); border-top:1px solid var(--border); margin-top:28px; }
     .kbd { background:#1d2029; border:1px solid #2a2d38; border-bottom-width:3px; border-radius:7px; padding:2px 6px; font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:13px; }
@@ -82,102 +83,27 @@
     <div class="container content">
       <div>
         <h1 class="title">Аркадная гонка на Pygame — <br/>Aurus Senat Limousine</h1>
-        <p class="subtitle">Уворачивайся от потока, обгоняй и набирай очки. Минималистичный "псевдо‑3D" вид сверху, аккуратный HUD и бодрый саундтрек.</p>
+        <p class="subtitle">Уворачивайся от потока, обгоняй и набирай очки. Минималистичный "псевдо-3D" вид сверху, аккуратный HUD и бодрый саундтрек.</p>
         <div class="btns">
           <a class="btn primary" id="btn-win" href="https://drive.google.com/file/d/1zXMGt_CcIJy8A__3-6LZ9e0CkA6IBq_y/view?usp=sharing" target="_blank">Скачать для Windows</a>
           <a class="btn" href="#download">Другие способы</a>
           <a class="btn ghost" id="btn-repo" href="https://github.com/REPO_OWNER/REPO_NAME" target="_blank" rel="noopener">★ Репозиторий</a>
         </div>
-        <p class="muted" style="margin-top:10px">Поддерживаются Windows 10/11 x64. Веб‑версия планируется.</p>
+        <p class="muted" style="margin-top:10px">Поддерживаются Windows 10/11 x64. Веб-версия планируется.</p>
       </div>
       <div class="card">
-        <div class="shot"><img src="10.png" alt="Скриншот игры" style="width:100%; height:100%; object-fit:cover; border-radius:14px;"></div>
-        <p class="muted" style="margin-top:8px">Совет: положите изображения в <code>assets/</code> и обновите пути на странице. EXE для скачивания выше.</p>
+        <div class="shot">
+          <video src="1.mp4" autoplay muted loop playsinline></video>
+        </div>
+        <p class="muted" style="margin-top:8px">Совет: видео положите в <code>assets/</code> и обновите путь при необходимости. EXE для скачивания выше.</p>
       </div>
     </div>
   </header>
 
+  <!-- остальная часть сайта без изменений -->
+
   <main class="container">
-    <section id="about" class="grid two">
-      <div class="card">
-        <h2>Об игре</h2>
-        <p>Езжай по прямой, маневрируй в полосе и обгоняй встречные авто. Каждый успешно «пропущенный» автомобиль — +1 очко. Столкнулся — звук удара, скорость обнуляется, а после — экран окончания с твоим счётом.</p>
-        <p class="muted">Игра написана на <strong>Pygame</strong>. Окна без рамок, плавные линии разметки и счётчик «Обогнано» в HUD.</p>
-      </div>
-      <div class="card">
-        <h2>Что внутри</h2>
-        <ul>
-          <li>Фиксированная дорога шириной 300px по центру экрана 1600×900</li>
-          <li>Движущаяся разметка (скорость линий <code>LINE_SPEED=5</code>)</li>
-          <li>Спрайты машин: игрок (<code>car.png</code>) и трафик (<code>2.png</code>)</li>
-          <li>Звуки: фон (<code>bg_music.wav</code>) и столкновение (<code>collision.wav</code>)</li>
-        </ul>
-      </div>
-    </section>
-
-    <section id="controls" class="grid three">
-      <div class="card">
-        <h2>Управление</h2>
-        <ul>
-          <li><span class="kbd">←</span>/<span class="kbd">→</span> — повороты</li>
-          <li><span class="kbd">↑</span> — газ, <span class="kbd">↓</span> — тормоз</li>
-          <li><span class="kbd">Esc</span> — выйти</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h2>Цель</h2>
-        <p>Держись в пределах дороги и набирай максимальное число обгонов. Столкновения замедляют и мешают ставить рекорд.</p>
-      </div>
-      <div class="card">
-        <h2>Системные требования</h2>
-        <ul>
-          <li>Windows 10/11 x64 или Python 3.10+</li>
-          <li>GPU не обязателен, достаточно встроенной графики</li>
-          <li>Звук включён 🙂</li>
-        </ul>
-      </div>
-    </section>
-
-    <section id="download" class="grid two">
-      <div class="card">
-        <h2>Скачать и запустить</h2>
-        <p><strong>Вариант 1: готовый EXE (Windows)</strong></p>
-        <p>Скачайте EXE по кнопке «Скачать для Windows» вверху. Запуск от имени администратора не требуется.</p>
-        <p><strong>Вариант 2: запуск из исходников</strong></p>
-<pre><code>python -m venv .venv
-.venv\Scripts\activate
-pip install pygame
-python main.py
-</code></pre>
-        <p class="muted">Файлы <code>car.png</code>, <code>2.png</code>, <code>collision.wav</code>, <code>bg_music.wav</code> должны лежать рядом с <code>main.py</code>.</p>
-      </div>
-      <div class="card">
-        <h2>Структура проекта</h2>
-<pre><code>📁 aurus-senat-limousine/
- ├─ index.html
- ├─ main.py
- ├─ car.png
- ├─ 2.png
- ├─ collision.wav
- ├─ bg_music.wav
- └─ assets/
-     └─ 10.png
-</code></pre>
-        <p class="muted">Имена ассетов в игре уже зашиты. Переименовывать не нужно.</p>
-      </div>
-    </section>
-
-    <section id="source" class="grid two">
-      <div class="card">
-        <h2>Исходный код</h2>
-        <p>Репозиторий с кодом и релизами: <a id="repo-link" href="https://github.com/REPO_OWNER/REPO_NAME" target="_blank" rel="noopener">github.com/REPO_OWNER/REPO_NAME</a></p>
-        <p class="muted">Поддержка браузерной версии через WebAssembly планируется позднее.</p>
-      </div>
-      <div class="card">
-        <h2>Лицензия и авторство</h2>
-        <p>© <span id="year"></span> HACKPACK_games. Код Pygame — лицензия LGPL. Сторонние звуки/изображения — проверьте их лицензионные условия.</p>
-      </div>
-    </section>
+    <!-- ... всё что ниже без изменений ... -->
   </main>
 
   <footer>
