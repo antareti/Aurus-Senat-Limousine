@@ -309,13 +309,12 @@ python main.py
                 const userCredential = await signInAnonymously(auth);
                 userId = userCredential.user.uid;
             }
-            userIdDisplay.textContent = userId;
+            userIdDisplay.textContent = `ID пользователя: ${userId}`;
 
             // Теперь, когда пользователь аутентифицирован, можно загружать комментарии
             if (userId) {
                 const q = query(collection(db, `/artifacts/${appId}/public/data/guestbook`));
                 onSnapshot(q, (querySnapshot) => {
-                    // Удаляем сообщение о загрузке, как только получим первый набор данных
                     if (loadingMessage) {
                         loadingMessage.remove();
                     }
@@ -350,16 +349,16 @@ python main.py
                     if (loadingMessage) {
                         loadingMessage.remove();
                     }
-                    commentsContainer.innerHTML = '<p style="text-align: center; color: var(--muted);">Не удалось загрузить комментарии. Попробуйте обновить страницу.</p>';
+                    commentsContainer.innerHTML = '<p style="text-align: center; color: var(--muted);">Не удалось загрузить комментарии. Пожалуйста, убедитесь, что у вас есть доступ к базе данных.</p>';
                 });
             }
         } catch (error) {
             console.error("Ошибка аутентификации или загрузки комментариев:", error);
-            userIdDisplay.textContent = 'Ошибка';
+            userIdDisplay.textContent = 'Ошибка аутентификации';
             if (loadingMessage) {
                 loadingMessage.remove();
             }
-            commentsContainer.innerHTML = '<p style="text-align: center; color: var(--muted);">Не удалось загрузить комментарии. Проверьте консоль для получения более подробной информации.</p>';
+            commentsContainer.innerHTML = '<p style="text-align: center; color: var(--muted);">Не удалось загрузить комментарии. Пожалуйста, проверьте консоль.</p>';
         }
     }
 
@@ -371,6 +370,10 @@ python main.py
         const comment = commentTextarea.value.trim();
         if (comment === "" || !userId) {
             console.error("Комментарий не может быть пустым или пользователь не аутентифицирован.");
+            // Можно добавить сообщение для пользователя, если он не авторизован
+            if (!userId) {
+                commentsContainer.innerHTML = '<p style="text-align: center; color: var(--muted);">Сначала необходимо авторизоваться, чтобы оставлять комментарии.</p>';
+            }
             return;
         }
 
@@ -383,6 +386,7 @@ python main.py
             commentTextarea.value = '';
         } catch (e) {
             console.error("Ошибка при добавлении документа: ", e);
+            commentsContainer.innerHTML = `<p style="text-align: center; color: var(--muted);">Не удалось отправить комментарий. Попробуйте еще раз.</p>`;
         }
     });
 
