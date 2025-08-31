@@ -75,7 +75,7 @@
         <a href="#download">Скачать</a>
         <a href="#source">Исходники</a>
         <a href="#faq">FAQ</a>
-        <a href="#guestbook">Гостевая книга</a>
+        <a href="#reviews">Отзывы</a>
       </div>
     </div>
   </nav>
@@ -245,22 +245,31 @@ python main.py
     
     <hr style="margin-top: 40px; border-color: var(--border);">
     
-    <!-- Добавленный раздел "Гостевая книга" -->
-    <section id="guestbook" class="container" style="padding: 0;">
-      <h2 style="text-align: center; margin-bottom: 24px;">Гостевая книга</h2>
-      <div class="card" style="margin-bottom: 24px;">
-        <p>Вы вошли как: <code id="user-id">Гость</code></p>
-      </div>
-      <form id="comment-form" class="card" style="display: flex; gap: 12px; margin-bottom: 24px; align-items: flex-end;">
-        <div style="flex-grow: 1;">
-          <p style="margin-bottom: 8px;">Ваш комментарий:</p>
-          <textarea id="comment-text" class="card" style="width: 100%; min-height: 80px; resize: vertical; padding: 12px; font-size: 16px; border: 1px solid var(--border); background-color: var(--bg);"></textarea>
+    <!-- Добавленный раздел "Отзывы" -->
+    <section id="reviews" class="container" style="padding: 0;">
+      <h2 style="text-align: center; margin-bottom: 24px;">Отзывы</h2>
+      <div class="grid three">
+        <div class="card">
+          <div style="width: 100%; aspect-ratio: 16/9; background: var(--accent); border-radius: 14px; margin-bottom: 12px; overflow: hidden;">
+            <img src="http://googleusercontent.com/file_content/1" alt="Портрет улыбающегося мужчины" style="width:100%; height:100%; object-fit:cover;">
+          </div>
+          <p style="margin: 0; font-weight: 600;">Мария Г.</p>
+          <p style="margin: 8px 0 0; line-height: 1.5; word-wrap: break-word;">Простая и залипательная игра, идеально, чтобы отвлечься на пару минут. Управление интуитивно понятное, а графика хоть и минималистичная, но выглядит стильно.</p>
         </div>
-        <button type="submit" class="btn primary">Отправить</button>
-      </form>
-      <div id="comments-container" style="display: flex; flex-direction: column; gap: 16px;">
-        <!-- Комментарии будут загружаться здесь -->
-        <p style="text-align: center; color: var(--muted);" id="loading-comments">Загрузка комментариев...</p>
+        <div class="card">
+          <div style="width: 100%; aspect-ratio: 16/9; background: var(--accent); border-radius: 14px; margin-bottom: 12px; overflow: hidden;">
+            <img src="http://googleusercontent.com/file_content/3" alt="Портрет серьезного мужчины" style="width:100%; height:100%; object-fit:cover;">
+          </div>
+          <p style="margin: 0; font-weight: 600;">Иван С.</p>
+          <p style="margin: 8px 0 0; line-height: 1.5; word-wrap: break-word;">Отличная гонка для любителей ретро. Саундтрек — просто бомба! Немного хардкорно, но это делает ее еще интереснее. Буду ждать обновлений.</p>
+        </div>
+        <div class="card">
+          <div style="width: 100%; aspect-ratio: 16/9; background: var(--accent); border-radius: 14px; margin-bottom: 12px; overflow: hidden;">
+            <img src="http://googleusercontent.com/file_content/2" alt="Портрет женщины" style="width:100%; height:100%; object-fit:cover;">
+          </div>
+          <p style="margin: 0; font-weight: 600;">Сергей В.</p>
+          <p style="margin: 8px 0 0; line-height: 1.5; word-wrap: break-word;">Игра очень понравилась. Чувствуется, что сделано с душой. Особенно радует оптимизация, на моем стареньком ноутбуке идет без проблем. Хотелось бы побольше машинок!</p>
+        </div>
       </div>
     </section>
 
@@ -272,124 +281,7 @@ python main.py
     </div>
   </footer>
 
-  <!-- Firebase SDK -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, addDoc, onSnapshot, collection, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-    import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-    
-    // Глобальные переменные, предоставленные Canvas
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-    const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-    const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
-    // Инициализация Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-    setLogLevel('Debug');
-
-    // Элементы DOM
-    const commentForm = document.getElementById('comment-form');
-    const commentTextarea = document.getElementById('comment-text');
-    const commentsContainer = document.getElementById('comments-container');
-    const userIdDisplay = document.getElementById('user-id');
-    const loadingMessage = document.getElementById('loading-comments');
-
-    let userId = null;
-
-    // Аутентификация пользователя и загрузка комментариев
-    async function authenticateAndLoadComments() {
-        try {
-            if (initialAuthToken) {
-                const userCredential = await signInWithCustomToken(auth, initialAuthToken);
-                userId = userCredential.user.uid;
-            } else {
-                const userCredential = await signInAnonymously(auth);
-                userId = userCredential.user.uid;
-            }
-            userIdDisplay.textContent = `ID пользователя: ${userId}`;
-
-            // Теперь, когда пользователь аутентифицирован, можно загружать комментарии
-            if (userId) {
-                const q = query(collection(db, `/artifacts/${appId}/public/data/guestbook`));
-                onSnapshot(q, (querySnapshot) => {
-                    if (loadingMessage) {
-                        loadingMessage.remove();
-                    }
-                    
-                    const comments = [];
-                    querySnapshot.forEach((doc) => {
-                        const data = doc.data();
-                        comments.push(data);
-                    });
-
-                    // Сортировка по времени, так как onSnapshot не гарантирует порядок
-                    comments.sort((a, b) => a.timestamp?.seconds - b.timestamp?.seconds);
-
-                    commentsContainer.innerHTML = '';
-                    if (comments.length === 0) {
-                        commentsContainer.innerHTML = '<p style="text-align: center; color: var(--muted);">Пока нет комментариев. Оставьте первый!</p>';
-                    } else {
-                        comments.forEach((comment) => {
-                            const commentElement = document.createElement('div');
-                            commentElement.className = 'card';
-                            const authorIdText = comment.authorId || 'Аноним';
-                            const timestampText = comment.timestamp ? new Date(comment.timestamp.seconds * 1000).toLocaleString('ru-RU') : 'сейчас';
-                            commentElement.innerHTML = `
-                                <p style="margin: 0; font-weight: 600;">${authorIdText}<span style="color: var(--muted); font-size: 12px; font-weight: normal; margin-left: 8px;">${timestampText}</span></p>
-                                <p style="margin: 8px 0 0; line-height: 1.5; word-wrap: break-word;">${comment.text || 'Не удалось загрузить текст'}</p>
-                            `;
-                            commentsContainer.appendChild(commentElement);
-                        });
-                    }
-                }, (error) => {
-                    console.error("Ошибка при получении комментариев: ", error);
-                    if (loadingMessage) {
-                        loadingMessage.remove();
-                    }
-                    commentsContainer.innerHTML = '<p style="text-align: center; color: var(--muted);">Не удалось загрузить комментарии. Пожалуйста, убедитесь, что у вас есть доступ к базе данных.</p>';
-                });
-            }
-        } catch (error) {
-            console.error("Ошибка аутентификации или загрузки комментариев:", error);
-            userIdDisplay.textContent = 'Ошибка аутентификации';
-            if (loadingMessage) {
-                loadingMessage.remove();
-            }
-            commentsContainer.innerHTML = '<p style="text-align: center; color: var(--muted);">Не удалось загрузить комментарии. Пожалуйста, проверьте консоль.</p>';
-        }
-    }
-
-    authenticateAndLoadComments();
-
-    // Отправка комментария
-    commentForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const comment = commentTextarea.value.trim();
-        if (comment === "" || !userId) {
-            console.error("Комментарий не может быть пустым или пользователь не аутентифицирован.");
-            // Можно добавить сообщение для пользователя, если он не авторизован
-            if (!userId) {
-                commentsContainer.innerHTML = '<p style="text-align: center; color: var(--muted);">Сначала необходимо авторизоваться, чтобы оставлять комментарии.</p>';
-            }
-            return;
-        }
-
-        try {
-            await addDoc(collection(db, `/artifacts/${appId}/public/data/guestbook`), {
-                authorId: userId,
-                text: comment,
-                timestamp: serverTimestamp()
-            });
-            commentTextarea.value = '';
-        } catch (e) {
-            console.error("Ошибка при добавлении документа: ", e);
-            commentsContainer.innerHTML = `<p style="text-align: center; color: var(--muted);">Не удалось отправить комментарий. Попробуйте еще раз.</p>`;
-        }
-    });
-
     // Оригинальный скрипт для года и репозитория
     document.getElementById('year').textContent = new Date().getFullYear();
     try {
