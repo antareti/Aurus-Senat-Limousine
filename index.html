@@ -331,9 +331,11 @@ python main.py
                         comments.forEach((comment) => {
                             const commentElement = document.createElement('div');
                             commentElement.className = 'card';
+                            const authorIdText = comment.authorId || 'Аноним';
+                            const timestampText = comment.timestamp ? new Date(comment.timestamp.seconds * 1000).toLocaleString('ru-RU') : 'сейчас';
                             commentElement.innerHTML = `
-                                <p style="margin: 0; font-weight: 600;">${comment.authorId.substring(0, 8)}...<span style="color: var(--muted); font-size: 12px; font-weight: normal; margin-left: 8px;">${comment.timestamp ? new Date(comment.timestamp.seconds * 1000).toLocaleString('ru-RU') : 'сейчас'}</span></p>
-                                <p style="margin: 8px 0 0; line-height: 1.5; word-wrap: break-word;">${comment.text}</p>
+                                <p style="margin: 0; font-weight: 600;">${authorIdText}<span style="color: var(--muted); font-size: 12px; font-weight: normal; margin-left: 8px;">${timestampText}</span></p>
+                                <p style="margin: 8px 0 0; line-height: 1.5; word-wrap: break-word;">${comment.text || 'Не удалось загрузить текст'}</p>
                             `;
                             commentsContainer.appendChild(commentElement);
                         });
