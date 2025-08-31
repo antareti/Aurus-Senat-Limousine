@@ -315,6 +315,11 @@ python main.py
             if (userId) {
                 const q = query(collection(db, `/artifacts/${appId}/public/data/guestbook`));
                 onSnapshot(q, (querySnapshot) => {
+                    // Удаляем сообщение о загрузке, как только получим первый набор данных
+                    if (loadingMessage) {
+                        loadingMessage.remove();
+                    }
+                    
                     const comments = [];
                     querySnapshot.forEach((doc) => {
                         const data = doc.data();
@@ -342,12 +347,18 @@ python main.py
                     }
                 }, (error) => {
                     console.error("Ошибка при получении комментариев: ", error);
+                    if (loadingMessage) {
+                        loadingMessage.remove();
+                    }
                     commentsContainer.innerHTML = '<p style="text-align: center; color: var(--muted);">Не удалось загрузить комментарии. Попробуйте обновить страницу.</p>';
                 });
             }
         } catch (error) {
             console.error("Ошибка аутентификации или загрузки комментариев:", error);
             userIdDisplay.textContent = 'Ошибка';
+            if (loadingMessage) {
+                loadingMessage.remove();
+            }
             commentsContainer.innerHTML = '<p style="text-align: center; color: var(--muted);">Не удалось загрузить комментарии. Проверьте консоль для получения более подробной информации.</p>';
         }
     }
